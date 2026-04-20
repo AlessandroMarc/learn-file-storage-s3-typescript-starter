@@ -86,7 +86,7 @@ export async function handlerUploadThumbnail(cfg: ApiConfig, req: BunRequest) {
     throw new BadRequestError("User not authorized to upload thumbnail for this video");
   }
 
-  const thumbnailUrl = `/assets/${videoId}.${extension}`;
+  const thumbnailUrl = `http://localhost:${cfg.port}/assets/${videoId}.${extension}`;
 
   video.thumbnailURL = thumbnailUrl;
 
