@@ -5,6 +5,7 @@ import type { ApiConfig } from "../config";
 import type { BunRequest } from "bun";
 import { BadRequestError, NotFoundError } from "./errors";
 import path from "path";
+import { randomBytes } from "crypto";
 
 type Thumbnail = {
   data: ArrayBuffer;
@@ -86,11 +87,15 @@ export async function handlerUploadThumbnail(cfg: ApiConfig, req: BunRequest) {
     throw new BadRequestError("User not authorized to upload thumbnail for this video");
   }
 
-  const thumbnailUrl = `http://localhost:${cfg.port}/assets/${videoId}.${extension}`;
+  const randomFileName = randomBytes(32).toString("base64");
+
+  const thumbnailUrl = `http://localhost:${cfg.port}/assets/${randomFileName}.${extension}`;
 
   video.thumbnailURL = thumbnailUrl;
 
   updateVideo(cfg.db, video);
+
+  console.log("thumbnail uploaded for video", videoId, "by user", userID);
 
   return respondWithJSON(200, video);
 }
